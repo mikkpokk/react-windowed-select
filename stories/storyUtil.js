@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 
-export const createOptions = R.map(x => ({ value: x, label: `Option ${x}` }));
+export const createOptions = R.map(x => ({ value: x, label: `A bit longer named option ${x} which will exceed standard height` }));
 
 export const options1 = createOptions(R.range(1,2));
 export const options50 = createOptions(R.range(1, 51));
