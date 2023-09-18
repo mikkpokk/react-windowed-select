@@ -5,6 +5,11 @@ export declare function isFocused({ props: { isFocused } }: {
         isFocused: any;
     };
 }): boolean;
+export declare function isSelected({ props: { isSelected } }: {
+    props: {
+        isSelected: any;
+    };
+}): boolean;
 export declare function getCurrentIndex(children: any): number;
 export declare function createGetHeight({ groupHeadingStyles, noOptionsMsgStyles, optionStyles, loadingMsgStyles, }: {
     groupHeadingStyles: any;
