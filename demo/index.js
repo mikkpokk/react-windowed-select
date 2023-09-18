@@ -11,11 +11,14 @@ import {
   options1M,
 } from './../stories/storyUtil';
 
+const options = options1K
+const selected = options1K[options1K.findIndex(item => item.value === 500)]
+
 function Demo () {
   return (
     <div>
       <h4>1K options</h4>
-      <WindowedSelect options={options1K} />
+      <WindowedSelect options={options} value={selected} />
 
       <h4>5K options</h4>
       <WindowedSelect options={options5K} />
