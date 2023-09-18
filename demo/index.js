@@ -16,7 +16,7 @@ const selected = options1K[options1K.findIndex(item => item.value === 500)]
 
 function Demo () {
   return (
-    <div>
+    <div style={{maxWidth: 300}}>
       <h4>1K options</h4>
       <WindowedSelect options={options} value={selected} />
 
