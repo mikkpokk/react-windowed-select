@@ -34,9 +34,18 @@ export function isFocused ({ props: { isFocused } }) {
   return isFocused === true;
 }
 
+export function isSelected ({ props: { isSelected }}) {
+  return isSelected === true
+}
+
 export function getCurrentIndex (children) {
+  let activeIndex = children.findIndex(isFocused)
+  if (activeIndex === -1) {
+    activeIndex = children.findIndex(isSelected)
+  }
+
   return Math.max(
-    children.findIndex(isFocused),
+    activeIndex,
     0
   );
 }

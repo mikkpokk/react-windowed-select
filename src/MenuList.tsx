@@ -5,7 +5,7 @@ import {
 } from './util';
 
 import * as React from 'react';
-import { ListChildComponentProps, VariableSizeList as List } from 'react-window';
+import {ListChildComponentProps, ListOnScrollProps, VariableSizeList as List} from 'react-window'
 import { OptionProps, GroupBase } from 'react-select';
 
 interface Style extends React.CSSProperties {
@@ -93,6 +93,24 @@ function MenuList (props) {
   const { classNamePrefix, isMulti } = selectProps || {};
   const list = React.useRef<List>(null);
   const allowScroll = React.useRef<boolean>(false);
+  const prevPos = React.useRef<number>(0)
+
+  const onScroll = React.useCallback(
+      (scrollProps) => {
+          let saveScrollPos = true
+          if (!scrollProps?.scrollUpdateWasRequested) {
+              if (scrollProps?.scrollOffset === 0 && (prevPos.current - menuHeight) > 0 && list.current) {
+                  list.current.scrollTo(prevPos.current)
+                  saveScrollPos = false
+              }
+          }
+
+          if (saveScrollPos) {
+              prevPos.current = scrollProps?.scrollOffset ?? 0
+          }
+      },
+      []
+  )
 
   React.useEffect(
     () => {
@@ -102,21 +120,24 @@ function MenuList (props) {
   );
 
   // method to pass to inner item to set this items outer height
-  const setMeasuredHeight = ({ index, measuredHeight }) => {
-    if (measuredHeights[index] !== undefined && measuredHeights[index] === measuredHeight) {
-      return;
-    }
+  const setMeasuredHeight = React.useCallback(
+    ({ index, measuredHeight }) => {
+      if (measuredHeights[index] !== undefined && measuredHeights[index] === measuredHeight) {
+        return;
+      }
 
-    setMeasuredHeights(measuredHeights => ({
-      ...measuredHeights,
-      [index]: measuredHeight,
-    }));
+      setMeasuredHeights(measuredHeights => ({
+        ...measuredHeights,
+        [index]: measuredHeight,
+      }));
 
-    // this forces the list to rerender items after the item positions resizing
-    if (list.current) {
-      list.current.resetAfterIndex(index);
-    }
-  };
+      // this forces the list to rerender items after the item positions resizing
+      if (list.current) {
+        list.current.resetAfterIndex(index, false);
+      }
+    },
+    [measuredHeights]
+  );
 
   React.useEffect(
       () => {
@@ -176,6 +197,7 @@ function MenuList (props) {
       ))}
       height={menuHeight}
       width="100%"
+      onScroll={onScroll}
       itemCount={itemCount}
       itemData={children}
       itemSize={index => measuredHeights[index] || heights[index]}
